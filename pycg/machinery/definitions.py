@@ -26,15 +26,16 @@ class DefinitionManager(object):
     def __init__(self):
         self.defs = {}
 
-    def create(self, ns, def_type):
+    def create(self, ns, def_type,lineno = None):
         if not ns or not isinstance(ns, str):
             raise DefinitionError("Invalid namespace argument")
         if def_type not in Definition.types:
             raise DefinitionError("Invalid def type argument")
         if self.get(ns):
             raise DefinitionError("Definition already exists")
+        lineno = lineno
 
-        self.defs[ns] = Definition(ns, def_type)
+        self.defs[ns] = Definition(ns, def_type, lineno)
         return self.defs[ns]
 
     def assign(self, ns, defi):
@@ -58,24 +59,25 @@ class DefinitionManager(object):
     def get_defs(self):
         return self.defs
 
-    def handle_function_def(self, parent_ns, fn_name):
+    def handle_function_def(self, parent_ns, fn_name, lineno = None):
         full_ns = utils.join_ns(parent_ns, fn_name)
         defi = self.get(full_ns)
         if not defi:
-            defi = self.create(full_ns, utils.constants.FUN_DEF)
+            defi = self.create(full_ns, utils.constants.FUN_DEF, lineno)
             defi.decorator_names = set()
 
         return_ns = utils.join_ns(full_ns, utils.constants.RETURN_NAME)
         if not self.get(return_ns):
-            self.create(return_ns, utils.constants.NAME_DEF)
+            self.create(return_ns, utils.constants.NAME_DEF, lineno)
 
         return defi
 
-    def handle_class_def(self, parent_ns, cls_name):
+    def handle_class_def(self, parent_ns, cls_name, lineno=None):
         full_ns = utils.join_ns(parent_ns, cls_name)
+        lineno = lineno
         defi = self.get(full_ns)
         if not defi:
-            defi = self.create(full_ns, utils.constants.CLS_DEF)
+            defi = self.create(full_ns, utils.constants.CLS_DEF, lineno)
 
         return defi
 
@@ -192,10 +194,11 @@ class Definition(object):
         utils.constants.EXT_DEF,
     ]
 
-    def __init__(self, fullns, def_type):
+    def __init__(self, fullns, def_type, lineno = None):
         self.fullns = fullns
         self.points_to = {"lit": LiteralPointer(), "name": NamePointer()}
         self.def_type = def_type
+        self.lineno = lineno
 
     def get_type(self):
         return self.def_type

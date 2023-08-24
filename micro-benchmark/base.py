@@ -58,20 +58,20 @@ class TestBase(TestCase):
         if not self.cg_class:
             error()
 
-    def validate_snippet(self, snippet_path):
-        output = self.get_snippet_output_cg(snippet_path)
-        expected = self.get_snippet_expected_cg(snippet_path)
+    def validate_snippet(self, snippet_path, meta_cg = False):
+        output = self.get_snippet_output_cg(snippet_path, meta_cg)
+        expected = self.get_snippet_expected_cg(snippet_path, meta_cg)
 
         self.assertEqual(output, expected)
 
     def get_snippet_path(self, name):
         return os.path.join(self.snippets_path, self.snippet_dir, name)
 
-    def get_snippet_output_cg(self, snippet_path):
+    def get_snippet_output_cg(self, snippet_path, meta_cg = False):
         main_path = os.path.join(snippet_path, "main.py")
         try:
             cg = self.cg_class(
-                [main_path], snippet_path, -1, utils.constants.CALL_GRAPH_OP
+                [main_path], snippet_path, -1, utils.constants.CALL_GRAPH_OP, meta_cg 
             )
             cg.analyze()
             return cg.output()
@@ -79,8 +79,11 @@ class TestBase(TestCase):
             cg.tearDown()
             raise e
 
-    def get_snippet_expected_cg(self, snippet_path):
-        cg_path = os.path.join(snippet_path, "callgraph.json")
+    def get_snippet_expected_cg(self, snippet_path, meta_cg = False):
+        if meta_cg:
+            cg_path = os.path.join(snippet_path, "metadata.json")
+        else:
+            cg_path = os.path.join(snippet_path, "callgraph.json")
         with open(cg_path, "r") as f:
             return json.loads(f.read())
 

@@ -136,10 +136,10 @@ class ProcessingBase(ast.NodeVisitor):
         for elt in node.elts:
             self.visit(elt)
 
-    def _handle_assign(self, targetns, decoded):
+    def _handle_assign(self, targetns, decoded, lineno ):
         defi = self.def_manager.get(targetns)
         if not defi:
-            defi = self.def_manager.create(targetns, utils.constants.NAME_DEF)
+            defi = self.def_manager.create(targetns, utils.constants.NAME_DEF, lineno)
 
         # check if decoded is iterable
         try:
@@ -161,7 +161,7 @@ class ProcessingBase(ast.NodeVisitor):
         self.visit(node.value)
 
         return_ns = utils.join_ns(self.current_ns, utils.constants.RETURN_NAME)
-        self._handle_assign(return_ns, self.decode_node(node.value))
+        self._handle_assign(return_ns, self.decode_node(node.value),node.lineno)
 
     def _get_target_ns(self, target):
         if isinstance(target, ast.Name):
@@ -192,7 +192,7 @@ class ProcessingBase(ast.NodeVisitor):
                 for tns in targetns:
                     if not tns:
                         continue
-                    defi = self._handle_assign(tns, decoded)
+                    defi = self._handle_assign(tns, decoded, target.lineno)
                     splitted = tns.split(".")
                     self.scope_manager.handle_assign(
                         ".".join(splitted[:-1]), splitted[-1], defi
@@ -360,7 +360,7 @@ class ProcessingBase(ast.NodeVisitor):
                         continue
                     ext_name = utils.join_ns(name, node.attr)
                     if not self.def_manager.get(ext_name):
-                        self.def_manager.create(ext_name, utils.constants.EXT_DEF)
+                        self.def_manager.create(ext_name, utils.constants.EXT_DEF, node.lineno)
                     names.add(ext_name)
         return names
 
