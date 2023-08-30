@@ -18,26 +18,16 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-RETURN_NAME = "<RETURN>"
-LAMBDA_NAME = "<LAMBDA_{}>"  # needs to be formatted
-BUILTIN_NAME = "<builtin>"
-EXT_NAME = "<external>"
+from .base import BaseFormatter
 
-FUN_DEF = "FUNCTIONDEF"
-NAME_DEF = "NAMEDEF"
-MOD_DEF = "MODULEDEF"
-CLS_DEF = "CLASSDEF"
-EXT_DEF = "EXTERNALDEF"
 
-OBJECT_BASE = "object"
+class Meta(BaseFormatter):
+    def __init__(self, cg_generator):
+        self.cg_generator = cg_generator
 
-CLS_INIT = "__init__"
-ITER_METHOD = "__iter__"
-NEXT_METHOD = "__next__"
-STATIC_METHOD = "staticmethod"
-
-INVALID_NAME = "<**INVALID**>"
-
-CALL_GRAPH_OP = "call-graph"
-META_CALL_GRAPH_OP = "meta-call-graph"
-KEY_ERR_OP = "key-error"
+    def generate(self):
+        output = self.cg_generator.output()
+        output_cg = {}
+        for node in output:
+            output_cg[node] = output[node]
+        return output_cg

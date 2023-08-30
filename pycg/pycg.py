@@ -22,6 +22,7 @@ import os
 
 from pycg import utils
 from pycg.machinery.callgraph import CallGraph
+from pycg.machinery.meta_callgraph import MetaCallGraph
 from pycg.machinery.classes import ClassManager
 from pycg.machinery.definitions import DefinitionManager
 from pycg.machinery.imports import ImportManager
@@ -35,13 +36,12 @@ from pycg.processing.preprocessor import PreProcessor
 
 
 class CallGraphGenerator(object):
-    def __init__(self, entry_points, package, max_iter, operation, meta_cg = False):
+    def __init__(self, entry_points, package, max_iter, operation):
         self.entry_points = entry_points
         self.package = package
         self.state = None
         self.max_iter = max_iter
         self.operation = operation
-        self.meta_cg = meta_cg
         self.setUp()
 
     def setUp(self):
@@ -50,8 +50,10 @@ class CallGraphGenerator(object):
         self.def_manager = DefinitionManager()
         self.class_manager = ClassManager()
         self.module_manager = ModuleManager()
-        self.cg = CallGraph(self.meta_cg)
+        self.meta_cg = MetaCallGraph()
+        self.cg = CallGraph()
         self.key_errs = KeyErrors()
+            
 
     def extract_state(self):
         state = {}
@@ -202,6 +204,17 @@ class CallGraphGenerator(object):
                 self.module_manager,
                 call_graph=self.cg,
             )
+        elif self.operation == utils.constants.META_CALL_GRAPH_OP:
+            self.do_pass(
+                CallGraphProcessor,
+                False,
+                self.import_manager,
+                self.scope_manager,
+                self.def_manager,
+                self.class_manager,
+                self.module_manager,
+                call_graph=self.meta_cg,
+            )
         elif self.operation == utils.constants.KEY_ERR_OP:
             self.do_pass(
                 KeyErrProcessor,
@@ -216,7 +229,10 @@ class CallGraphGenerator(object):
             raise Exception("Invalid operation: " + self.operation)
 
     def output(self):
-        return self.cg.get()
+        if self.operation == utils.constants.META_CALL_GRAPH_OP:
+            return self.meta_cg.get()
+        else:
+            return self.cg.get()   
 
     def output_key_errs(self):
         return self.key_errs.get()
@@ -226,7 +242,11 @@ class CallGraphGenerator(object):
     #     return self.key_errors
 
     def output_edges(self):
-        return self.cg.get_edges()
+        if self.operation == utils.constants.META_CALL_GRAPH_OP:
+            return self.meta_cg.get_edges()
+        else:
+            return self.cg.get_edges() 
+        
 
     def _generate_mods(self, mods):
         res = {}

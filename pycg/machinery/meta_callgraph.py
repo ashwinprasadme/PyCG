@@ -18,8 +18,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-class CallGraph(object):
-    def __init__(self):
+class MetaCallGraph(object):
+    def __init__(self, ):
         self.cg = {}
         self.modnames = {}
 
@@ -30,16 +30,22 @@ class CallGraph(object):
             raise CallGraphError("Empty node name")
 
         if name not in self.cg:
-            self.cg[name] = set()
+            self.cg[name] = {}
             self.modnames[name] = modname
+            self.cg[name]["lineno"] = lineno
+
 
         if name in self.cg and not self.modnames[name]:
             self.modnames[name] = modname
 
     def add_edge(self, src, dest, lineno = None, col_offset = None):
-        self.add_node(src)
-        self.add_node(dest)
-        self.cg[src].add(dest)
+        self.add_node(src,lineno)
+        self.add_node(dest, lineno)
+        self.cg[src] = {dest: {"lineno" : lineno,
+                                "col_offset" : col_offset }
+            }
+    
+        
 
     def get(self):
         return self.cg
