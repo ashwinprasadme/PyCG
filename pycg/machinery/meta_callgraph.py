@@ -41,9 +41,9 @@ class MetaCallGraph(object):
     def add_edge(self, src, dest, lineno = None, col_offset = None):
         self.add_node(src,lineno)
         self.add_node(dest, lineno)
-        self.cg[src] = {dest: {"lineno" : lineno,
+        self.cg[src][dest] = {"lineno" : lineno,
                                 "col_offset" : col_offset }
-            }
+            
     
         
 
