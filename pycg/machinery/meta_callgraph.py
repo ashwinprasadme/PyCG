@@ -19,11 +19,13 @@
 # under the License.
 #
 class MetaCallGraph(object):
-    def __init__(self, ):
+    def __init__(
+        self,
+    ):
         self.cg = {}
         self.modnames = {}
 
-    def add_node(self, name, lineno = None, modname=""):
+    def add_node(self, name, lineno=None, modname=""):
         if not isinstance(name, str):
             raise CallGraphError("Only string node names allowed")
         if not name:
@@ -34,18 +36,14 @@ class MetaCallGraph(object):
             self.modnames[name] = modname
             self.cg[name]["lineno"] = lineno
 
-
         if name in self.cg and not self.modnames[name]:
             self.modnames[name] = modname
 
-    def add_edge(self, src, dest, lineno = None, col_offset = None):
-        self.add_node(src,lineno)
+    def add_edge(self, src, dest, lineno=None, col_offset=None):
+        self.add_node(src, lineno)
         self.add_node(dest, lineno)
-        self.cg[src][dest] = {"lineno" : lineno,
-                                "col_offset" : col_offset }
-            
-    
-        
+        # self.cg[src] = {dest: {"lineno": lineno, "col_offset": col_offset}}
+        self.cg[src][dest] = {"lineno": lineno, "col_offset": col_offset}
 
     def get(self):
         return self.cg
