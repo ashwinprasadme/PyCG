@@ -43,17 +43,17 @@ class ScopeManager(object):
                 fullns = utils.join_ns(namespace, name)
             else:
                 fullns = namespace
-            
+
             if table.get_type() == "function":
                 _temp = {}
-                _temp['fullns'] = fullns
-                _temp['lineno'] = table.get_lineno()
+                _temp["fullns"] = fullns
+                _temp["lineno"] = table.get_lineno()
                 functions.append(_temp)
 
             if table.get_type() == "class":
                 _temp = {}
-                _temp['fullns'] = fullns
-                _temp['lineno'] = table.get_lineno()
+                _temp["fullns"] = fullns
+                _temp["lineno"] = table.get_lineno()
                 classes.append(_temp)
 
             sc = self.create_scope(fullns, parent)

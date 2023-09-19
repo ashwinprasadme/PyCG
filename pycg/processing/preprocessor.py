@@ -194,7 +194,7 @@ class PreProcessor(ProcessingBase):
                 defi = self.def_manager.create(
                     name, utils.constants.EXT_DEF, lineno, col_offset
                 )
-            tgt_defi.update_def(lineno, col_offset)
+            defi.update_def(lineno, col_offset)
             scope = self.scope_manager.get_scope(self.current_ns)
             if target != "*":
                 # add a def for the target that points to the name
