@@ -18,7 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-class MetaCallGraph(object):
+class MetaAssignmentGraph(object):
     def __init__(
         self,
     ):

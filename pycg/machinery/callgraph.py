@@ -23,7 +23,7 @@ class CallGraph(object):
         self.cg = {}
         self.modnames = {}
 
-    def add_node(self, name, lineno=None, modname=""):
+    def add_node(self, name, modname=""):
         if not isinstance(name, str):
             raise CallGraphError("Only string node names allowed")
         if not name:
@@ -36,7 +36,7 @@ class CallGraph(object):
         if name in self.cg and not self.modnames[name]:
             self.modnames[name] = modname
 
-    def add_edge(self, src, dest, lineno=None, col_offset=None):
+    def add_edge(self, src, dest):
         self.add_node(src)
         self.add_node(dest)
         self.cg[src].add(dest)

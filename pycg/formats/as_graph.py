@@ -29,5 +29,7 @@ class AsGraph(BaseFormatter):
         graph = self.cg_generator.get_as_graph()
         output = {}
         for key, defi in graph:
-            output[key] = list(defi.get_name_pointer().get().copy())
+            # output[key] = list(defi.get_name_pointer().get().copy())
+            # output[key] = {"lineno": defi.lineno, "col-offset": defi.col_offset}
+            output[key] = defi.defined_at
         return output

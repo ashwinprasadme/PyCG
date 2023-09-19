@@ -136,11 +136,14 @@ class ProcessingBase(ast.NodeVisitor):
         for elt in node.elts:
             self.visit(elt)
 
-    def _handle_assign(self, targetns, decoded, lineno ):
+    def _handle_assign(self, targetns, decoded, lineno, col_offset):
         defi = self.def_manager.get(targetns)
         if not defi:
-            defi = self.def_manager.create(targetns, utils.constants.NAME_DEF, lineno)
+            defi = self.def_manager.create(
+                targetns, utils.constants.NAME_DEF, lineno, col_offset
+            )
 
+        defi.update_def(lineno, col_offset)
         # check if decoded is iterable
         try:
             iter(decoded)
@@ -161,7 +164,9 @@ class ProcessingBase(ast.NodeVisitor):
         self.visit(node.value)
 
         return_ns = utils.join_ns(self.current_ns, utils.constants.RETURN_NAME)
-        self._handle_assign(return_ns, self.decode_node(node.value),node.lineno)
+        self._handle_assign(
+            return_ns, self.decode_node(node.value), node.lineno, node.col_offset
+        )
 
     def _get_target_ns(self, target):
         if isinstance(target, ast.Name):
@@ -192,7 +197,9 @@ class ProcessingBase(ast.NodeVisitor):
                 for tns in targetns:
                     if not tns:
                         continue
-                    defi = self._handle_assign(tns, decoded, target.lineno)
+                    defi = self._handle_assign(
+                        tns, decoded, target.lineno, target.col_offset
+                    )
                     splitted = tns.split(".")
                     self.scope_manager.handle_assign(
                         ".".join(splitted[:-1]), splitted[-1], defi
@@ -359,8 +366,13 @@ class ProcessingBase(ast.NodeVisitor):
                     if node.attr in name:
                         continue
                     ext_name = utils.join_ns(name, node.attr)
-                    if not self.def_manager.get(ext_name):
-                        self.def_manager.create(ext_name, utils.constants.EXT_DEF, node.lineno)
+                    ext_def = self.def_manager.get(ext_name)
+                    if not ext_def:
+                        self.def_manager.create(
+                            ext_name, utils.constants.EXT_DEF, node.lineno
+                        )
+                    ext_def.update_def(node.lineno, node.col_offset)
+
                     names.add(ext_name)
         return names
 

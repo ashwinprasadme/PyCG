@@ -22,7 +22,7 @@ import os
 
 from pycg import utils
 from pycg.machinery.callgraph import CallGraph
-from pycg.machinery.meta_callgraph import MetaCallGraph
+from pycg.machinery.meta_ag import MetaAssignmentGraph
 from pycg.machinery.classes import ClassManager
 from pycg.machinery.definitions import DefinitionManager
 from pycg.machinery.imports import ImportManager
@@ -33,6 +33,7 @@ from pycg.processing.cgprocessor import CallGraphProcessor
 from pycg.processing.keyerrprocessor import KeyErrProcessor
 from pycg.processing.postprocessor import PostProcessor
 from pycg.processing.preprocessor import PreProcessor
+from pycg.processing.agprocessor import MetaAgProcessor
 
 
 class CallGraphGenerator(object):
@@ -50,10 +51,9 @@ class CallGraphGenerator(object):
         self.def_manager = DefinitionManager()
         self.class_manager = ClassManager()
         self.module_manager = ModuleManager()
-        self.meta_cg = MetaCallGraph()
+        self.meta_cg = MetaAssignmentGraph()
         self.cg = CallGraph()
         self.key_errs = KeyErrors()
-            
 
     def extract_state(self):
         state = {}
@@ -62,6 +62,7 @@ class CallGraphGenerator(object):
             state["defs"][key] = {
                 "names": defi.get_name_pointer().get().copy(),
                 "lit": defi.get_lit_pointer().get().copy(),
+                "lineno": defi.get_lineno(),
             }
 
         state["scopes"] = {}
@@ -72,7 +73,7 @@ class CallGraphGenerator(object):
 
         state["classes"] = {}
         for key, ch in self.class_manager.get_classes().items():
-            state["classes"][key] = ch.get_mro().copy()
+            state["classes"][key] = {"MRO": ch.get_mro().copy(), "lineno": ch.lineno}
         return state
 
     def reset_counters(self):
@@ -204,9 +205,9 @@ class CallGraphGenerator(object):
                 self.module_manager,
                 call_graph=self.cg,
             )
-        elif self.operation == utils.constants.META_CALL_GRAPH_OP:
+        elif self.operation == utils.constants.META_ANALYSIS_OP:
             self.do_pass(
-                CallGraphProcessor,
+                MetaAgProcessor,
                 False,
                 self.import_manager,
                 self.scope_manager,
@@ -229,10 +230,10 @@ class CallGraphGenerator(object):
             raise Exception("Invalid operation: " + self.operation)
 
     def output(self):
-        if self.operation == utils.constants.META_CALL_GRAPH_OP:
+        if self.operation == utils.constants.META_ANALYSIS_OP:
             return self.meta_cg.get()
         else:
-            return self.cg.get()   
+            return self.cg.get()
 
     def output_key_errs(self):
         return self.key_errs.get()
@@ -242,11 +243,10 @@ class CallGraphGenerator(object):
     #     return self.key_errors
 
     def output_edges(self):
-        if self.operation == utils.constants.META_CALL_GRAPH_OP:
+        if self.operation == utils.constants.META_ANALYSIS_OP:
             return self.meta_cg.get_edges()
         else:
-            return self.cg.get_edges() 
-        
+            return self.cg.get_edges()
 
     def _generate_mods(self, mods):
         res = {}
