@@ -36,6 +36,7 @@ class MetaAgProcessor(ProcessingBase):
         def_manager,
         class_manager,
         module_manager,
+        usedef_manager,
         call_graph=None,
         modules_analyzed=None,
     ):
@@ -48,13 +49,14 @@ class MetaAgProcessor(ProcessingBase):
         self.def_manager = def_manager
         self.class_manager = class_manager
         self.module_manager = module_manager
-
+        self.usedef_manager = usedef_manager
         self.call_graph = call_graph
 
         self.closured = self.def_manager.transitive_closure()
 
     def visit_Module(self, node):
         self.call_graph.add_node(self.modname, None, self.modname)
+        self.usedef_manager.build_chains(self.filename)
         super().visit_Module(node)
 
     def visit_For(self, node):

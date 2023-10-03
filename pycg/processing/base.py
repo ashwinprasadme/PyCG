@@ -371,7 +371,8 @@ class ProcessingBase(ast.NodeVisitor):
                         self.def_manager.create(
                             ext_name, utils.constants.EXT_DEF, node.lineno
                         )
-                    ext_def.update_def(node.lineno, node.col_offset)
+                    else:
+                        ext_def.update_def(node.lineno, node.col_offset)
 
                     names.add(ext_name)
         return names

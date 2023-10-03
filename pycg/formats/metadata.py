@@ -19,15 +19,27 @@
 # under the License.
 #
 from .base import BaseFormatter
+from pycg import utils
 
 
 class Meta(BaseFormatter):
-    def __init__(self, cg_generator):
-        self.cg_generator = cg_generator
-
     def generate(self):
-        output = self.cg_generator.output()
-        output_cg = {}
-        for node in output:
-            output_cg[node] = output[node]
-        return output_cg
+        graph = self.cg_generator.get_as_graph()
+        return {
+            key: (
+                [
+                    {"name_pointers": [list(defi.get_name_pointer().get().copy())]},
+                    {"points_to": defi.points_to},
+                ]
+                if defi.def_type in [utils.constants.MOD_DEF, utils.constants.EXT_DEF]
+                else [
+                    {
+                        "defined_at": [
+                            d for d in defi.defined_at if d["lineno"] is not None
+                        ]
+                    },
+                    {"points_to": defi.points_to},
+                ]
+            )
+            for key, defi in graph
+        }

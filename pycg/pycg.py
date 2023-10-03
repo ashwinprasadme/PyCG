@@ -22,18 +22,19 @@ import os
 
 from pycg import utils
 from pycg.machinery.callgraph import CallGraph
+from pycg.machinery.meta_ag import MetaAssignmentGraph
 from pycg.machinery.classes import ClassManager
 from pycg.machinery.definitions import DefinitionManager
 from pycg.machinery.imports import ImportManager
 from pycg.machinery.key_err import KeyErrors
-from pycg.machinery.meta_ag import MetaAssignmentGraph
 from pycg.machinery.modules import ModuleManager
 from pycg.machinery.scopes import ScopeManager
-from pycg.processing.agprocessor import MetaAgProcessor
+from pycg.machinery.usedefs import UseDefManager
 from pycg.processing.cgprocessor import CallGraphProcessor
 from pycg.processing.keyerrprocessor import KeyErrProcessor
 from pycg.processing.postprocessor import PostProcessor
 from pycg.processing.preprocessor import PreProcessor
+from pycg.processing.agprocessor import MetaAgProcessor
 
 
 class CallGraphGenerator(object):
@@ -50,6 +51,7 @@ class CallGraphGenerator(object):
         self.scope_manager = ScopeManager()
         self.def_manager = DefinitionManager()
         self.class_manager = ClassManager()
+        self.usedef_manager = UseDefManager()
         self.module_manager = ModuleManager()
         self.meta_cg = MetaAssignmentGraph()
         self.cg = CallGraph()
@@ -59,11 +61,20 @@ class CallGraphGenerator(object):
         state = {}
         state["defs"] = {}
         for key, defi in self.def_manager.get_defs().items():
-            state["defs"][key] = {
-                "names": defi.get_name_pointer().get().copy(),
-                "lit": defi.get_lit_pointer().get().copy(),
-                "lineno": defi.get_lineno(),
-            }
+            if (
+                defi.def_type != utils.constants.MOD_DEF
+                and defi.def_type != utils.constants.EXT_DEF
+            ):
+                state["defs"][key] = {
+                    "names": defi.get_name_pointer().get().copy(),
+                    "lit": defi.get_lit_pointer().get().copy(),
+                    "lineno": defi.get_lineno(),
+                }
+            else:
+                state["defs"][key] = {
+                    "names": defi.get_name_pointer().get().copy(),
+                    "lit": defi.get_lit_pointer().get().copy(),
+                }
 
         state["scopes"] = {}
         for key, scope in self.scope_manager.get_scopes().items():
@@ -214,6 +225,7 @@ class CallGraphGenerator(object):
                 self.def_manager,
                 self.class_manager,
                 self.module_manager,
+                self.usedef_manager,
                 call_graph=self.meta_cg,
             )
         elif self.operation == utils.constants.KEY_ERR_OP:

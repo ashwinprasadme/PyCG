@@ -202,17 +202,33 @@ class Definition(object):
         self.fullns = fullns
         self.points_to = {"lit": LiteralPointer(), "name": NamePointer()}
         self.def_type = def_type
-        self.lineno = lineno
-        self.col_offset = col_offset
-        self.defined_at = [{"lineno": lineno, "col_offset": col_offset}]
+        if (
+            self.def_type != utils.constants.MOD_DEF
+            and self.def_type != utils.constants.EXT_DEF
+        ):
+            self.lineno = lineno
+            self.col_offset = col_offset
+            self.defined_at = [{"lineno": lineno, "col_offset": col_offset}]
 
     def get_type(self):
         return self.def_type
 
     def get_lineno(self):
-        return self.lineno
+        # if (
+        #     self.def_type != utils.constants.MOD_DEF
+        #     and self.def_type != utils.constants.EXT_DEF
+        # ):
+        return [
+            def_locs["lineno"]
+            for def_locs in self.defined_at
+            if def_locs["lineno"] is not None
+        ]
 
     def get_col_offset(self):
+        # if (
+        #     self.def_type != utils.constants.MOD_DEF
+        #     and self.def_type != utils.constants.EXT_DEF
+        # ):
         return self.col_offset
 
     def is_function_def(self):
@@ -241,10 +257,14 @@ class Definition(object):
             self.points_to[name].merge(pointer)
 
     def update_def(self, lineno=None, col_offset=None):
-        target_dict = {"lineno": lineno, "col_offset": col_offset}
-        found = any(d == target_dict for d in self.defined_at)
-        if not found:
-            self.defined_at.append(target_dict)
+        if (
+            self.def_type != utils.constants.MOD_DEF
+            and self.def_type != utils.constants.EXT_DEF
+        ):
+            target_dict = {"lineno": lineno, "col_offset": col_offset}
+            found = any(d == target_dict for d in self.defined_at)
+            if not found:
+                self.defined_at.append(target_dict)
 
 
 class DefinitionError(Exception):

@@ -340,7 +340,7 @@ class PostProcessor(ProcessingBase):
                         child_def.lineno,
                         child_def.col_offset,
                     )
-                new_def.update_def(child_def.line_no, child_def.col_offset)
+                new_def.update_def(child_def.lineno, child_def.col_offset)
 
                 new_def.get_name_pointer().add_set(names)
                 new_def.get_name_pointer().add(child_def.get_ns())
