@@ -19,6 +19,7 @@
 # under the License.
 #
 from pycg import utils
+
 from .base import BaseFormatter
 
 
