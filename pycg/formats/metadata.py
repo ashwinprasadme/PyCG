@@ -18,8 +18,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from .base import BaseFormatter
 from pycg import utils
+from .base import BaseFormatter
 
 
 class Meta(BaseFormatter):

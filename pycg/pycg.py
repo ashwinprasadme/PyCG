@@ -22,19 +22,19 @@ import os
 
 from pycg import utils
 from pycg.machinery.callgraph import CallGraph
-from pycg.machinery.meta_ag import MetaAssignmentGraph
 from pycg.machinery.classes import ClassManager
 from pycg.machinery.definitions import DefinitionManager
 from pycg.machinery.imports import ImportManager
 from pycg.machinery.key_err import KeyErrors
+from pycg.machinery.meta_ag import MetaAssignmentGraph
 from pycg.machinery.modules import ModuleManager
 from pycg.machinery.scopes import ScopeManager
 from pycg.machinery.usedefs import UseDefManager
+from pycg.processing.agprocessor import MetaAgProcessor
 from pycg.processing.cgprocessor import CallGraphProcessor
 from pycg.processing.keyerrprocessor import KeyErrProcessor
 from pycg.processing.postprocessor import PostProcessor
 from pycg.processing.preprocessor import PreProcessor
-from pycg.processing.agprocessor import MetaAgProcessor
 
 
 class CallGraphGenerator(object):

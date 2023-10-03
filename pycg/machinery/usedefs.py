@@ -1,6 +1,6 @@
+import ast
 import beniget
 import gast
-import ast
 
 
 class UseDefManager(gast.NodeVisitor):
