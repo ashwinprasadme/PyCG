@@ -208,7 +208,14 @@ class Definition(object):
         ):
             self.lineno = lineno
             self.col_offset = col_offset
-            self.defined_at = [{"lineno": lineno, "col_offset": col_offset}]
+            self.defined_at = [
+                {
+                    lineno: {
+                        "col_offset": col_offset,
+                        "points_to": {"lit": LiteralPointer(), "name": NamePointer()},
+                    }
+                }
+            ]
 
     def get_type(self):
         return self.def_type
@@ -218,11 +225,7 @@ class Definition(object):
         #     self.def_type != utils.constants.MOD_DEF
         #     and self.def_type != utils.constants.EXT_DEF
         # ):
-        return [
-            def_locs["lineno"]
-            for def_locs in self.defined_at
-            if def_locs["lineno"] is not None
-        ]
+        return list(self.defined_at[0].keys())
 
     def get_col_offset(self):
         # if (
@@ -240,11 +243,15 @@ class Definition(object):
     def is_callable(self):
         return self.is_function_def() or self.is_ext_def()
 
-    def get_lit_pointer(self):
-        return self.points_to["lit"]
+    def get_lit_pointer(self, lineno=None):
+        if lineno is None:
+            return self.points_to["lit"]
+        return self.defined_at[0][lineno]["points_to"]["lit"]
 
-    def get_name_pointer(self):
-        return self.points_to["name"]
+    def get_name_pointer(self, lineno=None):
+        if lineno is None:
+            return self.points_to["name"]
+        return self.defined_at[0][lineno]["points_to"]["name"]
 
     def get_name(self):
         return self.fullns.split(".")[-1]
@@ -261,10 +268,20 @@ class Definition(object):
             self.def_type != utils.constants.MOD_DEF
             and self.def_type != utils.constants.EXT_DEF
         ):
-            target_dict = {"lineno": lineno, "col_offset": col_offset}
-            found = any(d == target_dict for d in self.defined_at)
-            if not found:
-                self.defined_at.append(target_dict)
+            try:
+                self.defined_at[0][lineno]
+            except:
+                self.defined_at[0].update(
+                    {
+                        lineno: {
+                            "col_offset": col_offset,
+                            "points_to": {
+                                "lit": LiteralPointer(),
+                                "name": NamePointer(),
+                            },
+                        }
+                    }
+                )
 
 
 class DefinitionError(Exception):
