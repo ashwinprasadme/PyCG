@@ -18,7 +18,29 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from .as_graph import AsGraph  # noqa: F401
-from .fasten import Fasten  # noqa: F401
-from .metadata import Meta  # noqa: F401
-from .simple import Simple  # noqa: F401
+from pycg import utils
+
+from .base import BaseFormatter
+
+
+class Meta(BaseFormatter):
+    def generate(self):
+        graph = self.cg_generator.get_as_graph()
+        return {
+            key: (
+                [
+                    {"name_pointers": [list(defi.get_name_pointer().get().copy())]},
+                    {"points_to": defi.points_to},
+                ]
+                if defi.def_type in [utils.constants.MOD_DEF, utils.constants.EXT_DEF]
+                else [
+                    {
+                        "defined_at": [
+                            d for d in defi.defined_at if d["lineno"] is not None
+                        ]
+                    },
+                    {"points_to": defi.points_to},
+                ]
+            )
+            for key, defi in graph
+        }

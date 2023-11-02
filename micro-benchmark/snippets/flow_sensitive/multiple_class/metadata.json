@@ -1,0 +1,186 @@
+{
+    "main": {
+        "defined_at": [
+            {
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass.func": {
+        "defined_at": [
+            {
+                "line_no": 1,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [
+                        "main.MyClass:1.func:2"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass.func2": {
+        "defined_at": [
+            {
+                "line_no": 10,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [
+                        "main.MyClass:10.func2:11"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass": {
+        "defined_at": [
+            {
+                "line_no": 1,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            },
+            {
+                "line_no": 10,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass.func.<RETURN>": {
+        "defined_at": [
+            {
+                "line_no": 1,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass.func.self": {
+        "defined_at": [
+            {
+                "line_no": 1,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [
+                        "main.MyClass:1"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass<6>": {
+        "defined_at": [
+            {
+                "line_no": 1,
+                "col_offset": null,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.a": {
+        "defined_at": [
+            {
+                "line_no": 6,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [
+                        "main.MyClass<6>:1",
+                        "main.MyClass:1"
+                    ],
+                    "lit": []
+                }
+            },
+            {
+                "line_no": 15,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [
+                        "main.MyClass:10",
+                        "main.MyClass<15>:10"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.b": {
+        "defined_at": [
+            {
+                "line_no": 7,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [
+                        "main.MyClass:1.func:2"
+                    ],
+                    "lit": []
+                }
+            },
+            {
+                "line_no": 16,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [
+                        "main.MyClass:10.func2:11"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass.func2.<RETURN>": {
+        "defined_at": [
+            {
+                "line_no": 10,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass.func2.self": {
+        "defined_at": [
+            {
+                "line_no": 10,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [
+                        "main.MyClass:10"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.MyClass<15>": {
+        "defined_at": [
+            {
+                "line_no": 10,
+                "col_offset": null,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,100 @@
+{
+    "main": {
+        "defined_at": [
+            {
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func1": {
+        "defined_at": [
+            {
+                "line_no": 1,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func2": {
+        "defined_at": [
+            {
+                "line_no": 5,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            },
+            {
+                "line_no": 14,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func1.<RETURN>": {
+        "defined_at": [
+            {
+                "line_no": 1,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func2.<RETURN>": {
+        "defined_at": [
+            {
+                "line_no": 5,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            },
+            {
+                "line_no": 14,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.a": {
+        "defined_at": [
+            {
+                "line_no": 9,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [
+                        "main.func2:5"
+                    ],
+                    "lit": []
+                }
+            },
+            {
+                "line_no": 18,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [
+                        "main.func2:14"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    }
+}

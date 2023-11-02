@@ -1,0 +1,106 @@
+{
+    "main": {
+        "defined_at": [
+            {
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func1": {
+        "defined_at": [
+            {
+                "line_no": 3,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func2": {
+        "defined_at": [
+            {
+                "line_no": 7,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "random.Random.randint": {
+        "defined_at": [
+            {
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.randint": {
+        "defined_at": [
+            {
+                "points_to": {
+                    "names": [
+                        "random.Random.randint"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func1.<RETURN>": {
+        "defined_at": [
+            {
+                "line_no": 3,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.func2.<RETURN>": {
+        "defined_at": [
+            {
+                "line_no": 7,
+                "col_offset": 0,
+                "points_to": {
+                    "names": [],
+                    "lit": []
+                }
+            }
+        ]
+    },
+    "main.a": {
+        "defined_at": [
+            {
+                "line_no": 12,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [
+                        "main.func1:3"
+                    ],
+                    "lit": []
+                }
+            },
+            {
+                "line_no": 14,
+                "col_offset": 4,
+                "points_to": {
+                    "names": [
+                        "main.func2:7"
+                    ],
+                    "lit": []
+                }
+            }
+        ]
+    }
+}

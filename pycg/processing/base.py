@@ -23,6 +23,7 @@ import os
 
 from pycg import utils
 from pycg.machinery.definitions import Definition
+from pycg.machinery.usedefs import UseDefManager
 
 
 class ProcessingBase(ast.NodeVisitor):
@@ -33,6 +34,7 @@ class ProcessingBase(ast.NodeVisitor):
         self.modules_analyzed.add(self.modname)
 
         self.filename = os.path.abspath(filename)
+        self.usedef_manager = UseDefManager(self.filename)
 
         with open(filename, "rt", errors="replace") as f:
             self.contents = f.read()
@@ -136,22 +138,25 @@ class ProcessingBase(ast.NodeVisitor):
         for elt in node.elts:
             self.visit(elt)
 
-    def _handle_assign(self, targetns, decoded):
+    def _handle_assign(self, targetns, decoded, lineno, col_offset, decoded_fs=None):
         defi = self.def_manager.get(targetns)
         if not defi:
-            defi = self.def_manager.create(targetns, utils.constants.NAME_DEF)
-
+            defi = self.def_manager.create(
+                targetns, utils.constants.NAME_DEF, lineno, col_offset
+            )
+        else:
+            defi.update_def(lineno, col_offset)
         # check if decoded is iterable
         try:
             iter(decoded)
         except TypeError:
             return defi
 
-        for d in decoded:
+        for _, d in enumerate(decoded):
             if isinstance(d, Definition):
-                defi.get_name_pointer().add(d.get_ns())
+                defi.get_name_pointer(lineno).add((d.get_ns(), decoded_fs[_]))
             else:
-                defi.get_lit_pointer().add(d)
+                defi.get_lit_pointer(lineno).add((d))
         return defi
 
     def _visit_return(self, node):
@@ -161,7 +166,13 @@ class ProcessingBase(ast.NodeVisitor):
         self.visit(node.value)
 
         return_ns = utils.join_ns(self.current_ns, utils.constants.RETURN_NAME)
-        self._handle_assign(return_ns, self.decode_node(node.value))
+        self._handle_assign(
+            return_ns,
+            self.decode_node(node.value),
+            node.lineno,
+            node.col_offset,
+            self.decode_node_fs(self.decode_node(node.value), node.value),
+        )
 
     def _get_target_ns(self, target):
         if isinstance(target, ast.Name):
@@ -180,26 +191,29 @@ class ProcessingBase(ast.NodeVisitor):
         self.visit(value)
 
         decoded = self.decode_node(value)
+        decoded_fs = self.decode_node_fs(decoded, value)
 
-        def do_assign(decoded, target):
+        def do_assign(decoded, target, decoded_fs):
             self.visit(target)
             if isinstance(target, ast.Tuple):
                 for pos, elt in enumerate(target.elts):
                     if not isinstance(decoded, Definition) and pos < len(decoded):
-                        do_assign(decoded[pos], elt)
+                        do_assign(decoded[pos], elt, decoded_fs[pos])
             else:
                 targetns = self._get_target_ns(target)
                 for tns in targetns:
                     if not tns:
                         continue
-                    defi = self._handle_assign(tns, decoded)
+                    defi = self._handle_assign(
+                        tns, decoded, target.lineno, target.col_offset, decoded_fs
+                    )
                     splitted = tns.split(".")
                     self.scope_manager.handle_assign(
                         ".".join(splitted[:-1]), splitted[-1], defi
                     )
 
         for target in targets:
-            do_assign(decoded, target)
+            do_assign(decoded, target, decoded_fs)
 
     def decode_node(self, node):
         if isinstance(node, ast.Name):
@@ -285,6 +299,29 @@ class ProcessingBase(ast.NodeVisitor):
 
         return []
 
+    def decode_node_fs(self, decoded, value):
+        line_data = self.usedef_manager.line_uses.get(value.lineno, [])
+        name_to_lineno = {
+            use.name if hasattr(use, "name") else use.id: use.lineno
+            for use in line_data
+        }
+
+        line_numbers = []
+
+        def _process_item(item):
+            if isinstance(item, list):
+                return [_process_item(subitem) for subitem in item]
+            if isinstance(item, (int, float, str, bool)):
+                return None
+            return name_to_lineno.get(item.get_name())
+
+        if isinstance(value, ast.Tuple):
+            line_numbers = [_process_item(sublist) for sublist in decoded]
+        else:
+            line_numbers = [_process_item(item) for item in decoded]
+
+        return line_numbers
+
     def _is_literal(self, item):
         return isinstance(item, int) or isinstance(item, str) or isinstance(item, float)
 
@@ -353,14 +390,27 @@ class ProcessingBase(ast.NodeVisitor):
                     utils.constants.MOD_DEF,
                 ]:
                     names.add(utils.join_ns(name, node.attr))
+
+                if defi.get_type() == utils.constants.NAME_DEF:
+                    def_lines = defi.get_lineno()
+                    for line in def_lines:
+                        np = defi.get_name_pointer(line).values
+                        names.add(utils.join_ns(next(iter(np))[0], node.attr))
+
                 if defi.get_type() == utils.constants.EXT_DEF:
                     # HACK: extenral attributes can lead to infinite loops
                     # Identify them here
                     if node.attr in name:
                         continue
                     ext_name = utils.join_ns(name, node.attr)
-                    if not self.def_manager.get(ext_name):
-                        self.def_manager.create(ext_name, utils.constants.EXT_DEF)
+                    ext_def = self.def_manager.get(ext_name)
+                    if not ext_def:
+                        self.def_manager.create(
+                            ext_name, utils.constants.EXT_DEF, node.lineno
+                        )
+                    else:
+                        ext_def.update_def(node.lineno, node.col_offset)
+
                     names.add(ext_name)
         return names
 
@@ -368,6 +418,7 @@ class ProcessingBase(ast.NodeVisitor):
         for pos, arg in enumerate(node.args):
             self.visit(arg)
             decoded = self.decode_node(arg)
+            decoded_fs = self.decode_node_fs(decoded, node)
             if defi.is_function_def():
                 pos_arg_names = defi.get_name_pointer().get_pos_arg(pos)
                 # if arguments for this position exist update their namespace
@@ -377,11 +428,13 @@ class ProcessingBase(ast.NodeVisitor):
                     arg_def = self.def_manager.get(name)
                     if not arg_def:
                         continue
-                    for d in decoded:
+                    for _, d in enumerate(decoded):
                         if isinstance(d, Definition):
-                            arg_def.get_name_pointer().add(d.get_ns())
+                            arg_def.get_name_pointer(arg_def.lineno).add(
+                                (d.get_ns(), decoded_fs[_])
+                            )
                         else:
-                            arg_def.get_lit_pointer().add(d)
+                            arg_def.get_lit_pointer(arg_def.lineno).add(d)
             else:
                 for d in decoded:
                     if isinstance(d, Definition):

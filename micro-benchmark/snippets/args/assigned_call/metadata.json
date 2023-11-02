@@ -1,0 +1,22 @@
+{
+    "main": 
+    {
+        "main.func":
+        {
+            "lineno": 8,
+            "col_offset": 0
+        }
+    },
+    "main.param_func":
+    {
+        "lineno": 1
+    },
+    "main.func":
+    {
+        "main.param_func":
+        {
+            "lineno": 5,
+            "col_offset": 4
+        }
+    }
+}
