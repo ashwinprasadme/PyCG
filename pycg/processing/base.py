@@ -155,7 +155,6 @@ class ProcessingBase(ast.NodeVisitor):
         for _, d in enumerate(decoded):
             if isinstance(d, Definition):
                 defi.get_name_pointer(lineno).add((d.get_ns(), decoded_fs[_]))
-                defi.get_name_pointer(lineno).merge(d.get_name_pointer(decoded_fs[_]))
             else:
                 defi.get_lit_pointer(lineno).add((d))
         return defi
@@ -433,9 +432,6 @@ class ProcessingBase(ast.NodeVisitor):
                         if isinstance(d, Definition):
                             arg_def.get_name_pointer(arg_def.lineno).add(
                                 (d.get_ns(), decoded_fs[_])
-                            )
-                            arg_def.get_name_pointer(arg_def.lineno).merge(
-                                d.get_name_pointer(decoded_fs[_])
                             )
                         else:
                             arg_def.get_lit_pointer(arg_def.lineno).add(d)

@@ -208,14 +208,14 @@ class Definition(object):
         ):
             self.lineno = lineno
             self.col_offset = col_offset
-            self.defined_at = [
-                {
-                    lineno: {
-                        "col_offset": col_offset,
-                        "points_to": {"lit": LiteralPointer(), "name": NamePointer()},
-                    }
-                }
-            ]
+            self.defined_at = {}
+            self.defined_at[lineno] = {
+                "col_offset": col_offset,
+                "points_to": {
+                    "lit": LiteralPointer(),
+                    "name": NamePointer(),
+                },
+            }
 
     def get_type(self):
         return self.def_type
@@ -225,7 +225,7 @@ class Definition(object):
         #     self.def_type != utils.constants.MOD_DEF
         #     and self.def_type != utils.constants.EXT_DEF
         # ):
-        return list(self.defined_at[0].keys())
+        return list(self.defined_at.keys())
 
     def get_col_offset(self):
         # if (
@@ -246,12 +246,12 @@ class Definition(object):
     def get_lit_pointer(self, lineno=None):
         if lineno is None:
             return self.points_to["lit"]
-        return self.defined_at[0][lineno]["points_to"]["lit"]
+        return self.defined_at[lineno]["points_to"]["lit"]
 
     def get_name_pointer(self, lineno=None):
         if lineno is None:
             return self.points_to["name"]
-        return self.defined_at[0][lineno]["points_to"]["name"]
+        return self.defined_at[lineno]["points_to"]["name"]
 
     def get_name(self):
         return self.fullns.split(".")[-1]
@@ -264,24 +264,15 @@ class Definition(object):
             self.points_to[name].merge(pointer)
 
     def update_def(self, lineno=None, col_offset=None):
-        if (
-            self.def_type != utils.constants.MOD_DEF
-            and self.def_type != utils.constants.EXT_DEF
-        ):
-            try:
-                self.defined_at[0][lineno]
-            except:
-                self.defined_at[0].update(
-                    {
-                        lineno: {
-                            "col_offset": col_offset,
-                            "points_to": {
-                                "lit": LiteralPointer(),
-                                "name": NamePointer(),
-                            },
-                        }
-                    }
-                )
+        if self.def_type not in {utils.constants.MOD_DEF, utils.constants.EXT_DEF}:
+            if lineno not in self.defined_at:
+                self.defined_at[lineno] = {
+                    "col_offset": col_offset,
+                    "points_to": {
+                        "lit": LiteralPointer(),
+                        "name": NamePointer(),
+                    },
+                }
 
 
 class DefinitionError(Exception):

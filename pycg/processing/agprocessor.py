@@ -24,7 +24,6 @@ import os
 from pycg import utils
 from pycg.machinery.definitions import Definition
 from pycg.processing.base import ProcessingBase
-from pycg.machinery.usedefs import UseDefManager
 
 
 class MetaAgProcessor(ProcessingBase):

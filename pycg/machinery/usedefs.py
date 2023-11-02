@@ -67,9 +67,12 @@ class UseDefManager(gast.NodeVisitor):
 
     def analyze(self):
         self.generic_visit(self.module_node)
-        (self.line_uses, self.locals_defs, self.class_vars, self.meta_data) = (
-            self.get_all_definitions_for_use()
-        )
+        (
+            self.line_uses,
+            self.locals_defs,
+            self.class_vars,
+            self.meta_data,
+        ) = self.get_all_definitions_for_use()
         self.locals_defs_modules[self.module_path] = self.locals_defs
         UseDefManager.use_def_cache[self.module_path] = {
             "line_uses": self.line_uses,
@@ -153,7 +156,7 @@ class UseDefManager(gast.NodeVisitor):
                 #     _visit_child_locals(_var.node)
 
                 for _use in _var.users():
-                    if not _use.node.lineno in variable_defs:
+                    if _use.node.lineno not in variable_defs:
                         variable_defs[_use.node.lineno] = []
                     if full_nodes:
                         variable_defs[_use.node.lineno].append(_var.node)

@@ -80,7 +80,7 @@ class CallGraphGenerator(object):
                 defi.def_type != utils.constants.MOD_DEF
                 and defi.def_type != utils.constants.EXT_DEF
             ):
-                for item, value in defi.defined_at[0].items():
+                for item, value in defi.defined_at.items():
                     state["defs_fs"][key].update(
                         {
                             item: {

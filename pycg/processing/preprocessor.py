@@ -300,7 +300,7 @@ class PreProcessor(ProcessingBase):
                     arg_ns, utils.constants.NAME_DEF, node.lineno, node.col_offset
                 )
             arg_def.update_def(node.lineno, node.col_offset)
-            arg_def.get_name_pointer(node.lineno).add(current_def.get_ns())
+            # arg_def.get_name_pointer(node.lineno).add(current_def.get_ns())
 
             self.scope_manager.handle_assign(
                 fn_def.get_ns(), arg_def.get_name(), arg_def
