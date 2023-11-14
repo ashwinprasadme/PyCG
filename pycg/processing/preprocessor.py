@@ -300,12 +300,14 @@ class PreProcessor(ProcessingBase):
                     arg_ns, utils.constants.NAME_DEF, node.lineno, node.col_offset
                 )
             arg_def.update_def(node.lineno, node.col_offset)
-            # arg_def.get_name_pointer(node.lineno).add(current_def.get_ns())
+            arg_def.get_name_pointer(node.lineno).add(current_def.get_ns())
 
             self.scope_manager.handle_assign(
                 fn_def.get_ns(), arg_def.get_name(), arg_def
             )
-            node.args.args = node.args.args[1:]
+            node.args.args = (
+                node.args.args[1:] if node.args.args[0] == "self" else node.args.args
+            )
 
         for pos, arg in enumerate(node.args.args):
             arg_ns = utils.join_ns(fn_def.get_ns(), arg.arg)

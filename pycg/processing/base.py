@@ -317,8 +317,12 @@ class ProcessingBase(ast.NodeVisitor):
 
         if isinstance(value, ast.Tuple):
             line_numbers = [_process_item(sublist) for sublist in decoded]
-        else:
+
+        elif hasattr(decoded, "__iter__"):
             line_numbers = [_process_item(item) for item in decoded]
+
+        else:
+            line_numbers = _process_item(decoded)
 
         return line_numbers
 
@@ -438,9 +442,10 @@ class ProcessingBase(ast.NodeVisitor):
             else:
                 for d in decoded:
                     if isinstance(d, Definition):
-                        defi.get_name_pointer().add_pos_arg(pos, None, d.get_ns())
+                        lineno = self.decode_node_fs(defi, node)
+                        defi.get_name_pointer(lineno).add_pos_arg(pos, None, d.get_ns())
                     else:
-                        defi.get_name_pointer().add_pos_lit_arg(pos, None, d)
+                        defi.get_name_pointer(lineno).add_pos_lit_arg(pos, None, d)
 
         for keyword in node.keywords:
             self.visit(keyword.value)
