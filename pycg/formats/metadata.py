@@ -24,6 +24,9 @@ from .base import BaseFormatter
 
 
 class Meta(BaseFormatter):
+    def __init__(self, cg_generator):
+        self.cg_generator = cg_generator
+
     def generate(self):
         graph = self.cg_generator.get_as_graph()
         return {
@@ -34,11 +37,7 @@ class Meta(BaseFormatter):
                 ]
                 if defi.def_type in [utils.constants.MOD_DEF, utils.constants.EXT_DEF]
                 else [
-                    {
-                        "defined_at": [
-                            d for d in defi.defined_at if d["lineno"] is not None
-                        ]
-                    },
+                    {"defined_at": [d for d in defi.defined_at if d is not None]},
                     {"points_to": defi.points_to},
                 ]
             )
