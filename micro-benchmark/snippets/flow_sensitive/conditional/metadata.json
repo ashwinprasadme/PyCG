@@ -1,106 +1,70 @@
 {
     "main": {
-        "defined_at": [
-            {
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
-            }
-        ]
+        "name_pointers": [],
+        "lit_pointers": []
     },
     "main.func1": {
-        "defined_at": [
-            {
-                "line_no": 3,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "3": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func2": {
-        "defined_at": [
-            {
-                "line_no": 7,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "7": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
-    "random.Random.randint": {
-        "defined_at": [
-            {
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
-            }
-        ]
+    "random.randint": {
+        "name_pointers": [],
+        "lit_pointers": []
     },
     "main.randint": {
-        "defined_at": [
-            {
-                "points_to": {
-                    "names": [
-                        "random.Random.randint"
-                    ],
-                    "lit": []
-                }
-            }
-        ]
+        "name_pointers": [
+            "random.randint"
+        ],
+        "lit_pointers": []
     },
     "main.func1.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 3,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "3": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func2.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 7,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "7": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.a": {
-        "defined_at": [
-            {
-                "line_no": 12,
-                "col_offset": 4,
-                "points_to": {
-                    "names": [
-                        "main.func1:3"
-                    ],
-                    "lit": []
-                }
+        "defined_at": {
+            "12": {
+                "name": [
+                    [
+                        "main.func1",
+                        3
+                    ]
+                ],
+                "lit": []
             },
-            {
-                "line_no": 14,
-                "col_offset": 4,
-                "points_to": {
-                    "names": [
-                        "main.func2:7"
-                    ],
-                    "lit": []
-                }
+            "14": {
+                "name": [
+                    [
+                        "main.func2",
+                        7
+                    ]
+                ],
+                "lit": []
             }
-        ]
+        }
     }
 }

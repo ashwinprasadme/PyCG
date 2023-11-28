@@ -1,88 +1,72 @@
 {
     "main": {
-        "defined_at": [
-            {
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
-            }
-        ]
+        "name_pointers": [],
+        "lit_pointers": []
     },
     "main.param_func": {
-        "defined_at": [
-            {
-                "line_no": 1,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "1": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func": {
-        "defined_at": [
-            {
-                "line_no": 5,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "5": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.param_func.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 1,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "1": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 5,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "5": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func.a": {
-        "defined_at": [
-            {
-                "line_no": 5,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [
-                        "main.b:9"
+        "defined_at": {
+            "5": {
+                "name": [
+                    [
+                        "main.func",
+                        5
                     ],
-                    "lit": []
-                }
+                    [
+                        "main.b",
+                        9
+                    ],
+                    [
+                        "main.param_func",
+                        1
+                    ]
+                ],
+                "lit": []
             }
-        ]
+        }
     },
     "main.b": {
-        "defined_at": [
-            {
-                "line_no": 9,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [
-                        "main.param_func:1"
-                    ],
-                    "lit": []
-                }
+        "defined_at": {
+            "9": {
+                "name": [
+                    [
+                        "main.param_func",
+                        1
+                    ]
+                ],
+                "lit": []
             }
-        ]
+        }
     }
 }

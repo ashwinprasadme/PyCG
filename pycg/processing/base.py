@@ -320,7 +320,6 @@ class ProcessingBase(ast.NodeVisitor):
 
         elif hasattr(decoded, "__iter__"):
             line_numbers = [_process_item(item) for item in decoded]
-
         else:
             line_numbers = _process_item(decoded)
 
@@ -396,10 +395,10 @@ class ProcessingBase(ast.NodeVisitor):
                     names.add(utils.join_ns(name, node.attr))
 
                 if defi.get_type() == utils.constants.NAME_DEF:
-                    def_lines = defi.get_lineno()
-                    for line in def_lines:
-                        np = defi.get_name_pointer(line).values
-                        names.add(utils.join_ns(next(iter(np))[0], node.attr))
+                    lineno = self.decode_node_fs(defi, node)
+
+                    np = defi.get_name_pointer(lineno).values
+                    names.add(utils.join_ns(next(iter(np))[0], node.attr))
 
                 if defi.get_type() == utils.constants.EXT_DEF:
                     # HACK: extenral attributes can lead to infinite loops
@@ -409,11 +408,7 @@ class ProcessingBase(ast.NodeVisitor):
                     ext_name = utils.join_ns(name, node.attr)
                     ext_def = self.def_manager.get(ext_name)
                     if not ext_def:
-                        self.def_manager.create(
-                            ext_name, utils.constants.EXT_DEF, node.lineno
-                        )
-                    else:
-                        ext_def.update_def(node.lineno, node.col_offset)
+                        self.def_manager.create(ext_name, utils.constants.EXT_DEF)
 
                     names.add(ext_name)
         return names
@@ -424,7 +419,7 @@ class ProcessingBase(ast.NodeVisitor):
             decoded = self.decode_node(arg)
             decoded_fs = self.decode_node_fs(decoded, node)
             if defi.is_function_def():
-                pos_arg_names = defi.get_name_pointer().get_pos_arg(pos)
+                pos_arg_names = defi.get_name_pointer(defi.lineno).get_pos_arg(pos)
                 # if arguments for this position exist update their namespace
                 if not pos_arg_names:
                     continue
@@ -442,10 +437,13 @@ class ProcessingBase(ast.NodeVisitor):
             else:
                 for d in decoded:
                     if isinstance(d, Definition):
-                        lineno = self.decode_node_fs(defi, node)
                         defi.get_name_pointer(lineno).add_pos_arg(pos, None, d.get_ns())
                     else:
-                        defi.get_name_pointer(lineno).add_pos_lit_arg(pos, None, d)
+                        if defi.def_type == "EXTERNALDEF":
+                            defi.get_name_pointer().add_pos_lit_arg(pos, None, d)
+                        else:
+                            lineno = self.decode_node_fs(defi, node)
+                            defi.get_name_pointer(lineno).add_pos_lit_arg(pos, None, d)
 
         for keyword in node.keywords:
             self.visit(keyword.value)

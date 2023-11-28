@@ -8,3 +8,4 @@ def func(a):
 
 b = param_func
 func(b)
+func(func)

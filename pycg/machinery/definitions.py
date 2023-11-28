@@ -129,7 +129,9 @@ class DefinitionManager(object):
                     continue
                 if pointsto_arg == name:
                     continue
-                pointsto_arg_def = self.defs[pointsto_arg].get_name_pointer()
+                pointsto_arg_def = self.defs[pointsto_arg].get_name_pointer(
+                    self.defs[pointsto_arg].lineno
+                )
                 if pointsto_arg_def == pointsto_args:
                     continue
 
@@ -156,17 +158,25 @@ class DefinitionManager(object):
             changed_something = False
             for ns, current_def in self.defs.items():
                 # the name pointer of the definition we're currently iterating
-                current_name_pointer = current_def.get_name_pointer()
+                if (
+                    current_def.def_type == "MODULEDEF"
+                    or current_def.def_type == "EXTERNALDEF"
+                ):
+                    continue
+                current_name_pointer = current_def.get_name_pointer(current_def.lineno)
                 # iterate the names the current definition points to items
                 # for name in current_name_pointer.get():
-                for name in current_name_pointer.get().copy():
+                for _name in current_name_pointer.get().copy():
+                    name = _name[0]
                     # get the name pointer of the points to name
                     if not self.defs.get(name, None):
                         continue
                     if name == ns:
                         continue
 
-                    pointsto_name_pointer = self.defs[name].get_name_pointer()
+                    pointsto_name_pointer = self.defs[name].get_name_pointer(
+                        self.defs[name].lineno
+                    )
                     # iterate the arguments of the definition
                     # we're currently iterating
                     for arg_name, arg in current_name_pointer.get_args().items():

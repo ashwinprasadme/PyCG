@@ -29,17 +29,23 @@ class Meta(BaseFormatter):
 
     def generate(self):
         graph = self.cg_generator.get_as_graph()
-        return {
-            key: (
-                [
-                    {"name_pointers": [list(defi.get_name_pointer().get().copy())]},
-                    {"points_to": defi.points_to},
-                ]
-                if defi.def_type in [utils.constants.MOD_DEF, utils.constants.EXT_DEF]
-                else [
-                    {"defined_at": [d for d in defi.defined_at if d is not None]},
-                    {"points_to": defi.points_to},
-                ]
-            )
-            for key, defi in graph
-        }
+        output = {}
+        for key, defi in graph:
+            if defi.def_type not in [utils.constants.MOD_DEF, utils.constants.EXT_DEF]:
+                output[key] = {
+                    "defined_at": {
+                        d: {
+                            "name": defi.get_name_pointer(d).values,
+                            "lit": defi.get_lit_pointer(d).values,
+                        }
+                        for d in defi.defined_at
+                        if d is not None
+                    },
+                }
+
+            else:
+                output[key] = {
+                    "name_pointers": list(defi.get_name_pointer().values),
+                    "lit_pointers": list(defi.get_lit_pointer().values),
+                }
+        return output

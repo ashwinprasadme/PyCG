@@ -275,7 +275,7 @@ class PreProcessor(ProcessingBase):
         mod.add_method(fn_def.get_ns(), self._get_last_line(node))
 
         defs_to_create = []
-        name_pointer = fn_def.get_name_pointer()
+        name_pointer = fn_def.get_name_pointer(node.lineno)
 
         # TODO: static methods can be created using
         # the staticmethod() function too
@@ -306,7 +306,9 @@ class PreProcessor(ProcessingBase):
                 fn_def.get_ns(), arg_def.get_name(), arg_def
             )
             node.args.args = (
-                node.args.args[1:] if node.args.args[0] == "self" else node.args.args
+                node.args.args[1:]
+                if node.args.args[0].arg == "self"
+                else node.args.args
             )
 
         for pos, arg in enumerate(node.args.args):

@@ -1,228 +1,168 @@
 {
     "main": {
-        "defined_at": [
-            {
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
-            }
-        ]
+        "name_pointers": [],
+        "lit_pointers": []
     },
     "main.func1": {
-        "defined_at": [
-            {
-                "line_no": 1,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "1": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func2": {
-        "defined_at": [
-            {
-                "line_no": 5,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "5": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func3": {
-        "defined_at": [
-            {
-                "line_no": 9,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "9": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func4": {
-        "defined_at": [
-            {
-                "line_no": 13,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "13": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func5": {
-        "defined_at": [
-            {
-                "line_no": 17,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "17": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func6": {
-        "defined_at": [
-            {
-                "line_no": 21,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "21": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func1.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 1,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "1": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func2.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 5,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "5": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func3.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 9,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "9": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func4.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 13,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "13": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func5.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 17,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "17": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.func6.<RETURN>": {
-        "defined_at": [
-            {
-                "line_no": 21,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [],
-                    "lit": []
-                }
+        "defined_at": {
+            "21": {
+                "name": [],
+                "lit": []
             }
-        ]
+        }
     },
     "main.a": {
-        "defined_at": [
-            {
-                "line_no": 25,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [
-                        "main.func1:1"
-                    ],
-                    "lit": []
-                }
+        "defined_at": {
+            "25": {
+                "name": [
+                    [
+                        "main.func1",
+                        1
+                    ]
+                ],
+                "lit": []
             },
-            {
-                "line_no": 30,
-                "col_offset": 0,
-                "points_to": {
-                    "names": [
-                        "main.func4:13"
-                    ],
-                    "lit": []
-                }
+            "30": {
+                "name": [
+                    [
+                        "main.func4",
+                        13
+                    ]
+                ],
+                "lit": []
             }
-        ]
+        }
     },
     "main.b": {
-        "defined_at": [
-            {
-                "line_no": 25,
-                "col_offset": 4,
-                "points_to": {
-                    "names": [
-                        "main.func2:5"
-                    ],
-                    "lit": []
-                }
+        "defined_at": {
+            "25": {
+                "name": [
+                    [
+                        "main.func2",
+                        5
+                    ]
+                ],
+                "lit": []
             },
-            {
-                "line_no": 30,
-                "col_offset": 4,
-                "points_to": {
-                    "names": [
-                        "main.func5:17"
-                    ],
-                    "lit": []
-                }
+            "30": {
+                "name": [
+                    [
+                        "main.func5",
+                        17
+                    ]
+                ],
+                "lit": []
             }
-        ]
+        }
     },
     "main.c": {
-        "defined_at": [
-            {
-                "line_no": 25,
-                "col_offset": 7,
-                "points_to": {
-                    "names": [
-                        "main.func3:9"
-                    ],
-                    "lit": []
-                }
+        "defined_at": {
+            "25": {
+                "name": [
+                    [
+                        "main.func3",
+                        9
+                    ]
+                ],
+                "lit": []
             },
-            {
-                "line_no": 30,
-                "col_offset": 7,
-                "points_to": {
-                    "names": [
-                        "main.func6:21"
-                    ],
-                    "lit": []
-                }
+            "30": {
+                "name": [
+                    [
+                        "main.func6",
+                        21
+                    ]
+                ],
+                "lit": []
             }
-        ]
+        }
     }
 }
