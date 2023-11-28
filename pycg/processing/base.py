@@ -204,6 +204,7 @@ class ProcessingBase(ast.NodeVisitor):
                 for tns in targetns:
                     if not tns:
                         continue
+                    # RS decoded_fs contaains lineno information for decoded items
                     defi = self._handle_assign(
                         tns, decoded, target.lineno, target.col_offset, decoded_fs
                     )
@@ -300,6 +301,7 @@ class ProcessingBase(ast.NodeVisitor):
         return []
 
     def decode_node_fs(self, decoded, value):
+        # RS looks in lineuses to match common lineno for decoded and value
         line_data = self.usedef_manager.line_uses.get(value.lineno, [])
         name_to_lineno = {
             use.name if hasattr(use, "name") else use.id: use.lineno
@@ -395,6 +397,7 @@ class ProcessingBase(ast.NodeVisitor):
                     names.add(utils.join_ns(name, node.attr))
 
                 if defi.get_type() == utils.constants.NAME_DEF:
+                    # RS getting the lineno of defi that is linked to node add to the name pointer
                     lineno = self.decode_node_fs(defi, node)
 
                     np = defi.get_name_pointer(lineno).values
@@ -441,14 +444,17 @@ class ProcessingBase(ast.NodeVisitor):
                         defi.get_name_pointer(lineno).add_pos_arg(pos, None, d.get_ns())
                     else:
                         if defi.def_type == "EXTERNALDEF":
+                            # RS we don't have each lineno info for external defs
                             defi.get_name_pointer().add_pos_lit_arg(pos, None, d)
                         else:
                             lineno = self.decode_node_fs(defi, node)
                             defi.get_name_pointer(lineno).add_pos_lit_arg(pos, None, d)
 
         for keyword in node.keywords:
+            # RS have to find the lineno of defi for everywhere we get or add to the name pointers
             self.visit(keyword.value)
             decoded = self.decode_node(keyword.value)
+            # RS decoded_fs = self.decode_node_fs(decoded, node)
             if defi.is_function_def():
                 arg_names = defi.get_name_pointer().get_arg(keyword.arg)
                 if not arg_names:

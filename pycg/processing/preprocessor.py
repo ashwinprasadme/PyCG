@@ -299,12 +299,15 @@ class PreProcessor(ProcessingBase):
                 arg_def = self.def_manager.create(
                     arg_ns, utils.constants.NAME_DEF, node.lineno, node.col_offset
                 )
-            arg_def.update_def(node.lineno, node.col_offset)
+            else:
+                arg_def.update_def(node.lineno, node.col_offset)
+            # RS get the namepointer from the same lineno
             arg_def.get_name_pointer(node.lineno).add(current_def.get_ns())
 
             self.scope_manager.handle_assign(
                 fn_def.get_ns(), arg_def.get_name(), arg_def
             )
+            # RS Cases where functions are called without self in args
             node.args.args = (
                 node.args.args[1:]
                 if node.args.args[0].arg == "self"
@@ -334,7 +337,8 @@ class PreProcessor(ProcessingBase):
                 arg_def = self.def_manager.create(
                     arg_ns, utils.constants.NAME_DEF, node.lineno, node.col_offset
                 )
-            arg_def.update_def(node.lineno, node.col_offset)
+            else:
+                arg_def.update_def(node.lineno, node.col_offset)
 
             self.scope_manager.handle_assign(
                 fn_def.get_ns(), arg_def.get_name(), arg_def

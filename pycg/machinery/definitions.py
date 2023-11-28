@@ -73,7 +73,8 @@ class DefinitionManager(object):
             return_ns_defi = self.create(
                 return_ns, utils.constants.NAME_DEF, lineno, col_offset
             )
-        return_ns_defi.update_def(lineno, col_offset)
+        else:
+            return_ns_defi.update_def(lineno, col_offset)
         return defi
 
     def handle_class_def(self, parent_ns, cls_name, lineno=None, col_offset=None):
@@ -158,6 +159,7 @@ class DefinitionManager(object):
             changed_something = False
             for ns, current_def in self.defs.items():
                 # the name pointer of the definition we're currently iterating
+                # RS
                 if (
                     current_def.def_type == "MODULEDEF"
                     or current_def.def_type == "EXTERNALDEF"
@@ -174,6 +176,8 @@ class DefinitionManager(object):
                     if name == ns:
                         continue
 
+                    # RS resolving for one of the linenos of the def
+                    # RS have to do it for all
                     pointsto_name_pointer = self.defs[name].get_name_pointer(
                         self.defs[name].lineno
                     )
@@ -238,6 +242,8 @@ class Definition(object):
         return list(self.defined_at.keys())
 
     def get_col_offset(self):
+        # RS might have to add the check condition as some code might ask the lineno
+        # for MOD or EXT while iterating through defs
         # if (
         #     self.def_type != utils.constants.MOD_DEF
         #     and self.def_type != utils.constants.EXT_DEF
